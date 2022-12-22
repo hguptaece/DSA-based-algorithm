@@ -1,0 +1,66 @@
+# DSA-based-algorithm
+#include<bits/stdc++.h>
+using namespace std;
+
+int getMinNode(vector<int>& dist,vector<bool>& visited){
+    int ans=-1;
+    int cur_min_dist=INT_MAX;
+    int n=dist.size();
+
+    for(int i=0;i<n;i++){
+        if(visited[i]==false && dist[i] < cur_min_dist){
+            cur_min_dist=dist[i];
+            ans=i;
+        }
+    }
+    return ans;
+}
+
+void dijkstra(vector<vector<int>> adj,int src,int n){
+    vector<int> dist(n,INT_MAX);
+    vector<bool> visited(n,false);
+    dist[src]=0;
+    
+    for(int i=0;i<n;i++){
+        //currently minimum distant node from src
+        int cur=getMinNode(dist,visited);
+        visited[cur]=true;
+
+        for(int nbr=0;nbr<n;nbr++){
+            if(adj[cur][nbr] != 0){
+                int weight=adj[cur][nbr];
+                
+                if(weight+dist[cur] < dist[nbr]){
+                    dist[nbr]=weight+dist[cur];
+                }
+            }
+        }
+    }
+
+    for(int i=0;i<n;i++){
+        cout<<"shortest distance to travel from"<<src<<" to "<<i<<" will be: "<<dist[i]<<" \n";
+    }
+}  
+
+int main(){
+    cout<<"Please Enter the number of vertices and edges in your graph..\n";
+    int v,e;
+    cin>>v>>e;
+
+    //for adjacency Matrix Representation
+    vector<vector<int>> adj(v,vector<int>(v,0));
+
+    for(int i=0;i<e;i++){
+        int u,v,w;
+        cin>>u>>v>>w;
+
+        adj[u][v]=w;
+        adj[v][u]=w;
+    }
+
+    int src;
+    cout<<"Please Enter the source from which you want all the shortest distance\n";
+    cin>>src;
+
+    dijkstra(adj,src,v);
+}
