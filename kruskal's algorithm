@@ -1,0 +1,87 @@
+# DSA-based-algorithm
+#include<bits/stdc++.h>
+using namespace std;
+
+class DSU{
+    private: 
+        int* leader;
+        int* size;
+    public:
+        DSU(int v){
+            leader=new int[v];
+            size=new int[v];
+
+            for(int i=0;i<v;i++){
+                leader[i]=-1;
+                size[i]=1;
+            }
+        }
+
+        int Find(int x){
+            if(leader[x] == -1){
+                return x;
+            }
+            return leader[x]=Find(leader[x]);
+        }
+
+        bool Union(int a,int b){
+            int leaderA=Find(a);
+            int leaderB=Find(b);
+
+            if(leaderA == leaderB){
+                return false;
+            }
+
+            if(size[leaderA] < size[leaderB]){
+                leader[leaderA]=leaderB;
+                size[leaderB]+=size[leaderA];
+            }else{
+                leader[leaderB]=leaderA;
+                size[leaderA]+=size[leaderB];
+            }
+
+            return true;
+        }
+};
+
+void kruskal(vector<vector<int>> edges,int n){
+    DSU dsu(n);
+
+    sort(edges.begin(),edges.end());
+    vector<vector<int>> tree;
+
+    for(int i=0;i<edges.size();i++){
+        int u=edges[i][1];
+        int w=edges[i][0];
+        int v=edges[i][2];
+
+        if(dsu.Union(u,v)){
+            tree.push_back({u,v,w});
+        }
+    }
+
+    for(auto edge: tree){
+        cout<<"( "<<edge[0]<<" , "<<edge[1]<<" , "<<edge[2]<<" ) , ";
+    }
+    cout<<"\n";
+}
+
+int main(){
+    cout<<"Please Enter the number of vertices and edges in your graph..\n";
+    int v,e;
+    cin>>v>>e;
+
+    //for Edge List Representation
+    vector<vector<int>> edges;
+
+    for(int i=0;i<e;i++){
+        int u,v,w;
+        cin>>u>>v>>w;
+
+        edges.push_back({w,u,v});
+        edges.push_back({w,v,u});
+    }
+
+    kruskal(edges,v);
+    return 0;
+}
